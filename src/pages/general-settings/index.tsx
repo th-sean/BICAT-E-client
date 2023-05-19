@@ -1,7 +1,9 @@
-import React
 
-const AccountSettings = () => {
+const GeneralSettings = () => {
     return (
-
+        <></>
     )
 }
+
+export default GeneralSettings
+
