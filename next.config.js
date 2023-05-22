@@ -1,6 +1,9 @@
 const path = require('path')
+const withPWA = require("next-pwa")({
+  dest: 'public'
+})
 
-module.exports = {
+module.exports = withPWA({
   trailingSlash: true,
   reactStrictMode: false,
   experimental: {
@@ -15,4 +18,4 @@ module.exports = {
 
     return config
   }
-}
+})
