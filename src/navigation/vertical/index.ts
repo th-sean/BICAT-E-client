@@ -42,7 +42,7 @@ const navigation = (): VerticalNavItemsType => {
     },
     {title: 'General Setting',
       icon: GeneralSetting,
-    path:'/general-setting'},
+      path:'/general-settings'},
     {
       sectionTitle: 'Accounts'
     },
