@@ -124,7 +124,7 @@ const TableStickyHeader = () => {
               <TableBody>
                 {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(row => {
                   return (
-                    <TableRow hover role='checkbox' tabIndex={-1} key={row.code}>
+                    <TableRow hover role='checkbox' tabIndex={-1}>
                       {columns.map(column => {
                         const value = row[column.id]
 
