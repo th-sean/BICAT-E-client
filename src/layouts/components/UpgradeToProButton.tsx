@@ -74,14 +74,14 @@ const BuyNowButton = () => {
             </a>
             <CardContent>
               <Typography sx={{ mb: 4 }} variant='h6'>
-                Materio - React Admin Template
+                Download Our PWA Application
               </Typography>
               <Typography sx={{ mb: 4 }} variant='body2'>
-                Materio Admin is the most developer friendly & highly customizable Admin Dashboard Template based on MUI
-                and NextJS.
+              To enhance your experience and enjoy our app even when offline, we recommend downloading our PWA application.
+        Simply click the button below to download and install the app on your device.
               </Typography>
               <Typography sx={{ mb: 4 }} variant='body2'>
-                Click on below buttons to explore PRO version.
+                Click on below buttons to download BICAT Mobile Application.
               </Typography>
               <Button
                 component='a'
