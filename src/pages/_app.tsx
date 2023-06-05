@@ -1,5 +1,5 @@
 // ** React
-import React, { useState, useEffect, ReactNode } from 'react'
+import React, { useEffect } from 'react'
 
 // ** Next Imports
 import Head from 'next/head'
@@ -37,7 +37,8 @@ import 'react-perfect-scrollbar/dist/css/styles.css'
 
 // ** Global css styles
 import '../../styles/globals.css'
-import { AnyARecord } from 'dns'
+
+// import { AnyARecord } from 'dns'
 
 // ** Extend App Props with Emotion
 type ExtendedAppProps = AppProps & {
@@ -58,10 +59,6 @@ if (themeConfig.routingLoader) {
   Router.events.on('routeChangeComplete', () => {
     NProgress.done()
   })
-}
-
-interface ProtectRoutesProps {
-  children: ReactNode
 }
 
 const ProtectedRoutes = ({ children }: any) => {
@@ -87,6 +84,7 @@ const ProtectedRoutes = ({ children }: any) => {
   if (isPageLoading) {
     return null
   }
+  
   return children
 }
 
@@ -98,7 +96,7 @@ const App = (props: ExtendedAppProps) => {
   const getLayout = Component.getLayout ?? (page => <UserLayout>{page}</UserLayout>)
 
   return (
-    <SessionProvider session={pageProps.session} basePath="/pages/login">
+    <SessionProvider session={pageProps.session} basePath='/pages/login'>
       <CacheProvider value={emotionCache}>
         <ProtectedRoutes>
           <Head>
