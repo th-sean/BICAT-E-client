@@ -96,7 +96,7 @@ const App = (props: ExtendedAppProps) => {
   const getLayout = Component.getLayout ?? (page => <UserLayout>{page}</UserLayout>)
 
   return (
-    <SessionProvider session={pageProps.session} basePath='/pages/login'>
+    <SessionProvider session={pageProps.session}>
       <CacheProvider value={emotionCache}>
         <ProtectedRoutes>
           <Head>
