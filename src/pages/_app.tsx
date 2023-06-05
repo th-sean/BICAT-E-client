@@ -1,8 +1,16 @@
+// ** React
+import React, { useState, useEffect, ReactNode } from 'react'
+
 // ** Next Imports
 import Head from 'next/head'
 import { Router } from 'next/router'
 import type { NextPage } from 'next'
 import type { AppProps } from 'next/app'
+
+//** Next-Auth
+import { SessionProvider } from 'next-auth/react'
+import { useSession, signIn, signOut } from 'next-auth/react'
+import { useRouter } from 'next/router'
 
 // ** Loader Import
 import NProgress from 'nprogress'
@@ -29,6 +37,7 @@ import 'react-perfect-scrollbar/dist/css/styles.css'
 
 // ** Global css styles
 import '../../styles/globals.css'
+import { AnyARecord } from 'dns'
 
 // ** Extend App Props with Emotion
 type ExtendedAppProps = AppProps & {
@@ -51,6 +60,36 @@ if (themeConfig.routingLoader) {
   })
 }
 
+interface ProtectRoutesProps {
+  children: ReactNode
+}
+
+const ProtectedRoutes = ({ children }: any) => {
+  //Get session
+  const { data: session, status } = useSession()
+  const isUserSignedIn = !!session
+  const isPageLoading = status === 'loading'
+
+  const router = useRouter()
+
+  useEffect(() => {
+    // If data is still loading, return
+    if (isPageLoading) {
+      return
+    }
+
+    // If not signed in and not on the login page, redirect to the login page
+    if (!isUserSignedIn && router.pathname !== '/login') {
+      signIn()
+    }
+  }, [isUserSignedIn, isPageLoading, router])
+
+  if (isPageLoading) {
+    return null
+  }
+  return children
+}
+
 // ** Configure JSS & ClassName
 const App = (props: ExtendedAppProps) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
@@ -59,25 +98,29 @@ const App = (props: ExtendedAppProps) => {
   const getLayout = Component.getLayout ?? (page => <UserLayout>{page}</UserLayout>)
 
   return (
-    <CacheProvider value={emotionCache}>
-      <Head>
-        <title>{`${themeConfig.templateName} - AI-Powered Bookkeeping, Tax Filing `}</title>
-        <meta
-          name='description'
-          content={`${themeConfig.templateName} – Streamline Your Finances with Cutting-Edge AI: The Ultimate App for High Net Worth Individuals, Automating Bookkeeping and Tax Filing`}
-        />
-        <meta name='keywords' content='AI-Powered Bookkeeping, Tax Filing' />
-        <meta name='viewport' content='initial-scale=1, width=device-width' />
-      </Head>
+    <SessionProvider session={pageProps.session} basePath="/pages/login">
+      <CacheProvider value={emotionCache}>
+        <ProtectedRoutes>
+          <Head>
+            <title>{`${themeConfig.templateName} - AI-Powered Bookkeeping, Tax Filing `}</title>
+            <meta
+              name='description'
+              content={`${themeConfig.templateName} – Streamline Your Finances with Cutting-Edge AI: The Ultimate App for High Net Worth Individuals, Automating Bookkeeping and Tax Filing`}
+            />
+            <meta name='keywords' content='AI-Powered Bookkeeping, Tax Filing' />
+            <meta name='viewport' content='initial-scale=1, width=device-width' />
+          </Head>
 
-      <SettingsProvider>
-        <SettingsConsumer>
-          {({ settings }) => {
-            return <ThemeComponent settings={settings}>{getLayout(<Component {...pageProps} />)}</ThemeComponent>
-          }}
-        </SettingsConsumer>
-      </SettingsProvider>
-    </CacheProvider>
+          <SettingsProvider>
+            <SettingsConsumer>
+              {({ settings }) => {
+                return <ThemeComponent settings={settings}>{getLayout(<Component {...pageProps} />)}</ThemeComponent>
+              }}
+            </SettingsConsumer>
+          </SettingsProvider>
+        </ProtectedRoutes>
+      </CacheProvider>
+    </SessionProvider>
   )
 }
 
