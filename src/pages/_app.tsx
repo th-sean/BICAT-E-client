@@ -31,12 +31,11 @@ import 'react-perfect-scrollbar/dist/css/styles.css'
 import '../../styles/globals.css'
 
 // import { AnyARecord } from 'dns'
-
 // ** Amplify
 import { Amplify } from 'aws-amplify';
 import awsExports from '../aws-exports';
 
-Amplify.configure({...awsExports, ssr: true});
+Amplify.configure({awsExports, ssr: true});
 
 //** AWS Amplify Authenticator
 import { withAuthenticator } from '@aws-amplify/ui-react';
