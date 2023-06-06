@@ -1,16 +1,8 @@
-// ** React
-import React, { useEffect } from 'react'
-
 // ** Next Imports
 import Head from 'next/head'
 import { Router } from 'next/router'
 import type { NextPage } from 'next'
 import type { AppProps } from 'next/app'
-
-//** Next-Auth
-import { SessionProvider } from 'next-auth/react'
-import { useSession, signIn } from 'next-auth/react'
-import { useRouter } from 'next/router'
 
 // ** Loader Import
 import NProgress from 'nprogress'
@@ -40,6 +32,16 @@ import '../../styles/globals.css'
 
 // import { AnyARecord } from 'dns'
 
+// ** Amplify
+import { Amplify } from 'aws-amplify';
+import awsExports from '../aws-exports';
+
+Amplify.configure({...awsExports, ssr: true});
+
+//** AWS Amplify Authenticator
+import { withAuthenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
+
 // ** Extend App Props with Emotion
 type ExtendedAppProps = AppProps & {
   Component: NextPage
@@ -61,33 +63,6 @@ if (themeConfig.routingLoader) {
   })
 }
 
-const ProtectedRoutes = ({ children }: any) => {
-  //Get session
-  const { data: session, status } = useSession()
-  const isUserSignedIn = !!session
-  const isPageLoading = status === 'loading'
-
-  const router = useRouter()
-
-  useEffect(() => {
-    // If data is still loading, return
-    if (isPageLoading) {
-      return
-    }
-
-    // If not signed in and not on the login page, redirect to the login page
-    if (!isUserSignedIn && router.pathname !== '/login') {
-      signIn()
-    }
-  }, [isUserSignedIn, isPageLoading, router])
-
-  if (isPageLoading) {
-    return null
-  }
-  
-  return children
-}
-
 // ** Configure JSS & ClassName
 const App = (props: ExtendedAppProps) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
@@ -96,9 +71,9 @@ const App = (props: ExtendedAppProps) => {
   const getLayout = Component.getLayout ?? (page => <UserLayout>{page}</UserLayout>)
 
   return (
-    <SessionProvider session={pageProps.session}>
+    
       <CacheProvider value={emotionCache}>
-        <ProtectedRoutes>
+       
           <Head>
             <title>{`${themeConfig.templateName} - AI-Powered Bookkeeping, Tax Filing `}</title>
             <meta
@@ -116,10 +91,10 @@ const App = (props: ExtendedAppProps) => {
               }}
             </SettingsConsumer>
           </SettingsProvider>
-        </ProtectedRoutes>
+    
       </CacheProvider>
-    </SessionProvider>
+   
   )
 }
 
-export default App
+export default withAuthenticator(App)
