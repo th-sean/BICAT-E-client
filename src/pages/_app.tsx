@@ -33,9 +33,9 @@ import '../../styles/globals.css'
 // import { AnyARecord } from 'dns'
 // ** Amplify
 import { Amplify } from 'aws-amplify';
-import awsExports from '../aws-exports';
+import awsExports from '../aws-exports.js';
 
-Amplify.configure({awsExports, ssr: true});
+Amplify.configure({...awsExports, ssr: true});
 
 //** AWS Amplify Authenticator
 import { withAuthenticator } from '@aws-amplify/ui-react';
