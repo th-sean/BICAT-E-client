@@ -30,6 +30,17 @@ import 'react-perfect-scrollbar/dist/css/styles.css'
 // ** Global css styles
 import '../../styles/globals.css'
 
+// import { AnyARecord } from 'dns'
+// ** Amplify
+import { Amplify } from 'aws-amplify';
+import awsExports from '../aws-exports';
+
+Amplify.configure(awsExports);
+
+//** AWS Amplify Authenticator
+import { withAuthenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
+
 // ** Extend App Props with Emotion
 type ExtendedAppProps = AppProps & {
   Component: NextPage
@@ -59,26 +70,30 @@ const App = (props: ExtendedAppProps) => {
   const getLayout = Component.getLayout ?? (page => <UserLayout>{page}</UserLayout>)
 
   return (
-    <CacheProvider value={emotionCache}>
-      <Head>
-        <title>{`${themeConfig.templateName} - AI-Powered Bookkeeping, Tax Filing `}</title>
-        <meta
-          name='description'
-          content={`${themeConfig.templateName} – Streamline Your Finances with Cutting-Edge AI: The Ultimate App for High Net Worth Individuals, Automating Bookkeeping and Tax Filing`}
-        />
-        <meta name='keywords' content='AI-Powered Bookkeeping, Tax Filing' />
-        <meta name='viewport' content='initial-scale=1, width=device-width' />
-      </Head>
+    
+      <CacheProvider value={emotionCache}>
+       
+          <Head>
+            <title>{`${themeConfig.templateName} - AI-Powered Bookkeeping, Tax Filing `}</title>
+            <meta
+              name='description'
+              content={`${themeConfig.templateName} – Streamline Your Finances with Cutting-Edge AI: The Ultimate App for High Net Worth Individuals, Automating Bookkeeping and Tax Filing`}
+            />
+            <meta name='keywords' content='AI-Powered Bookkeeping, Tax Filing' />
+            <meta name='viewport' content='initial-scale=1, width=device-width' />
+          </Head>
 
-      <SettingsProvider>
-        <SettingsConsumer>
-          {({ settings }) => {
-            return <ThemeComponent settings={settings}>{getLayout(<Component {...pageProps} />)}</ThemeComponent>
-          }}
-        </SettingsConsumer>
-      </SettingsProvider>
-    </CacheProvider>
+          <SettingsProvider>
+            <SettingsConsumer>
+              {({ settings }) => {
+                return <ThemeComponent settings={settings}>{getLayout(<Component {...pageProps} />)}</ThemeComponent>
+              }}
+            </SettingsConsumer>
+          </SettingsProvider>
+    
+      </CacheProvider>
+   
   )
 }
 
-export default App
+export default withAuthenticator(App)
